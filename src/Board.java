@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Board {
@@ -8,9 +9,9 @@ public class Board {
     private static String[][] boardList;
 
     /**
-     * 他方コマ位置特定用enum
+     * 指定コマ位置特定用enum
      */
-    private static enum otherDiscPosEnum {
+    private static enum discPosEnum {
         TOP,
         TOPRIGHT,
         TOPLEFT,
@@ -22,9 +23,16 @@ public class Board {
     };
 
     /**
-     * 他方コマ位置
+     * 指定コマ行番号/列番号/方向
      */
-    private static int otherDiscPos = -1;
+    private static int discRowNo = -1;
+    private static int discColumnNo = -1;
+    private static int discPos = -1;
+
+    /**
+     * 指定コマ方向格納リスト
+     */
+    private static ArrayList<Integer> allTargetDiscPos = new ArrayList<>();
 
     /** 初期状態
      * 
@@ -75,89 +83,177 @@ public class Board {
     }
 
     /**
-     * 指定色コマ方角特定
+     * 指定コマ隣接チェック
      * 
      * @param rowNo
      * @param columnNo
-     * @param discColor
+     * @param otherDisc
      */
-    public ArrayList<Integer> seekDiscPos(int rowNo, int columnNo, String otherDisc) {
-        int otherDiscRowNo = -1;
-        int otherDiscColumnNo = -1;
-        ArrayList<Integer> otherDiscRowNoColumnNo = new ArrayList<>();
-
-        // 上に別色コマがあるかチェック
-        if (boardList[rowNo-1][columnNo].equals(otherDisc)) {
-            otherDiscPos = otherDiscPosEnum.TOP.ordinal();
-            otherDiscRowNo = rowNo-1;
-            otherDiscColumnNo = columnNo;
+    public boolean isNextToTargetDisc(int rowNo, int columnNo, String disc) {
+        // 上に指定コマがあるかチェック
+        if (boardList[rowNo-1][columnNo].equals(disc)) {
+            allTargetDiscPos.add(discPosEnum.TOP.ordinal());
         }
 
-        // 右上に別色コマがあるかチェック
-        if (boardList[rowNo-1][columnNo+1].equals(otherDisc)) {
-            otherDiscPos = otherDiscPosEnum.TOPRIGHT.ordinal();
-            otherDiscRowNo = rowNo-1;
-            otherDiscColumnNo = columnNo+1;
+        // 右上に指定コマがあるかチェック
+        if (boardList[rowNo-1][columnNo+1].equals(disc)) {
+            allTargetDiscPos.add(discPosEnum.TOPRIGHT.ordinal());
         }
 
-        // 左上に別色コマがあるかチェック
-        if (boardList[rowNo-1][columnNo-1].equals(otherDisc)) {
-            otherDiscPos = otherDiscPosEnum.TOPLEFT.ordinal();
-            otherDiscRowNo = rowNo-1;
-            otherDiscColumnNo = columnNo-1;
+        // 左上に指定コマがあるかチェック
+        if (boardList[rowNo-1][columnNo-1].equals(disc)) {
+            allTargetDiscPos.add(discPosEnum.TOPLEFT.ordinal());
         }
 
-        // 下に別色コマがあるかチェック
-        if (boardList[rowNo+1][columnNo].equals(otherDisc)) {
-            otherDiscPos = otherDiscPosEnum.BOTTOM.ordinal();
-            otherDiscRowNo = rowNo+1;
-            otherDiscColumnNo = columnNo;
+        // 下に指定コマがあるかチェック
+        if (boardList[rowNo+1][columnNo].equals(disc)) {
+            allTargetDiscPos.add(discPosEnum.BOTTOM.ordinal());
         }
 
-        // 右下に別色コマがあるかチェック
-        if (boardList[rowNo+1][columnNo+1].equals(otherDisc)) {
-            otherDiscPos = otherDiscPosEnum.BOTTOMRIGHT.ordinal();
-            otherDiscRowNo = rowNo+1;
-            otherDiscColumnNo = columnNo+1;
+        // 右下に指定コマがあるかチェック
+        if (boardList[rowNo+1][columnNo+1].equals(disc)) {
+            allTargetDiscPos.add(discPosEnum.BOTTOMRIGHT.ordinal());
         }
 
-        // 左下に別色コマがあるかチェック
-        if (boardList[rowNo+1][columnNo-1].equals(otherDisc)) {
-            otherDiscPos = otherDiscPosEnum.BOTTOMLEFT.ordinal();
-            otherDiscRowNo = rowNo+1;
-            otherDiscColumnNo = columnNo-1;
+        // 左下に指定コマがあるかチェック
+        if (boardList[rowNo+1][columnNo-1].equals(disc)) {
+            allTargetDiscPos.add(discPosEnum.BOTTOMLEFT.ordinal());
         }
 
-        // 右に別色コマがあるかチェック
-        if (boardList[rowNo][columnNo+1].equals(otherDisc)) {
-            otherDiscPos = otherDiscPosEnum.RIGHT.ordinal();
-            otherDiscRowNo = rowNo;
-            otherDiscColumnNo = columnNo+1;
+        // 右に指定コマがあるかチェック
+        if (boardList[rowNo][columnNo+1].equals(disc)) {
+            allTargetDiscPos.add(discPosEnum.RIGHT.ordinal());
         }
 
-        // 左に別色コマがあるかチェック
-        if (boardList[rowNo][columnNo-1].equals(otherDisc)) {
-            otherDiscPos = otherDiscPosEnum.LEFT.ordinal();
-            otherDiscRowNo = rowNo;
-            otherDiscColumnNo = columnNo-1;
+        // 左に指定コマがあるかチェック
+        if (boardList[rowNo][columnNo-1].equals(disc)) {
+            allTargetDiscPos.add(discPosEnum.LEFT.ordinal());
         }
 
-        otherDiscRowNoColumnNo.add(otherDiscRowNo);
-        otherDiscRowNoColumnNo.add(otherDiscColumnNo);
+        // 指定コマが隣接していなければそのままリターン
+        if (allTargetDiscPos.size() == 0) {
+            return false;
+        }
 
-        return otherDiscRowNoColumnNo;
+        return true;
     }
 
-    /** 別色取得
+    /**
+     * 指定コマ探索
+     * 
+     * @param rowNo
+     * @param columnNo
+     * @param discPos
+     */
+    public ArrayList<Integer> seekTargetDisc(int rowNo, int columnNo, int discPos, String disc, int noCounter) {
+        // 上に指定コマがある場合
+        if (discPos == discPosEnum.TOP.ordinal()) {
+            if (boardList[rowNo-noCounter][columnNo].equals(disc)) {
+                discRowNo = rowNo-noCounter;
+                discColumnNo = columnNo;
+            }
+        }
+
+        // 右上に指定コマがある
+        if (discPos == discPosEnum.TOPRIGHT.ordinal()) {
+            if (boardList[rowNo-noCounter][columnNo+noCounter].equals(disc)) {
+                discRowNo = rowNo-noCounter;
+                discColumnNo = columnNo+noCounter;
+            }
+        }
+
+        // 左上に指定コマがある場合
+        if (discPos == discPosEnum.TOPLEFT.ordinal()) {
+            if (boardList[rowNo-noCounter][columnNo-noCounter].equals(disc)) {
+                discRowNo = rowNo-noCounter;
+                discColumnNo = columnNo-noCounter;
+            }
+        }
+
+        // 下に指定コマがある場合
+        if (discPos == discPosEnum.BOTTOM.ordinal()) {
+            if (boardList[rowNo+noCounter][columnNo].equals(disc)) {
+                discRowNo = rowNo+noCounter;
+                discColumnNo = columnNo;
+            }
+        }
+
+        // 右下に指定コマがある場合
+        if (discPos == discPosEnum.BOTTOMRIGHT.ordinal()) {
+            if (boardList[rowNo+noCounter][columnNo+1].equals(disc)) {
+                discRowNo = rowNo+noCounter;
+                discColumnNo = columnNo+noCounter;
+            }
+        }
+
+        // 左下に指定コマがある場合
+        if (discPos == discPosEnum.BOTTOMLEFT.ordinal()) {
+            if (boardList[rowNo+noCounter][columnNo-noCounter].equals(disc)) {
+                discRowNo = rowNo+noCounter;
+                discColumnNo = columnNo-noCounter;
+            }
+        }
+
+        // 右に指定コマがある場合
+        if (discPos == discPosEnum.RIGHT.ordinal()) {
+            if (boardList[rowNo][columnNo+noCounter].equals(disc)) {
+                discRowNo = rowNo;
+                discColumnNo = columnNo+noCounter;
+            }
+        }
+
+        // 左に指定コマがある場合
+        if (discPos == discPosEnum.LEFT.ordinal()) {
+            if (boardList[rowNo][columnNo-noCounter].equals(disc)) {
+                discRowNo = rowNo;
+                discColumnNo = columnNo-noCounter;
+            }
+        }
+
+        ArrayList<Integer> targetDiscRowNoColumnNo = new ArrayList<>();
+        targetDiscRowNoColumnNo.add(discRowNo);
+        targetDiscRowNoColumnNo.add(discColumnNo);
+
+        return targetDiscRowNoColumnNo;
+    }
+
+    /*
+     * 指定コマ方向取得
+     */
+    public int getTargetDiscPos() {
+        return discPos;
+    }
+
+    /**
+     * 指定コマ行番号/列番号/方向のリスト返却
+     */
+    public ArrayList<Integer> getTargetDiscPosRowNoColumnNo() {
+        ArrayList<Integer> targetDiscPosRowNoColumnNo = new ArrayList<>();
+        targetDiscPosRowNoColumnNo.add(discPos);
+        targetDiscPosRowNoColumnNo.add(discRowNo);
+        targetDiscPosRowNoColumnNo.add(discColumnNo);
+
+        return targetDiscPosRowNoColumnNo;
+    }
+
+    /** 指定取得
      * 
      * @param discColor
      */
-    public String getOtherDiscColor(String discColor) {
-        // 別色を特定
+    public String getOtherDisc(String discColor) {
+        // 指定を特定
         if (discColor.equals("B")) {
             return "W";
         } else {
             return "B";
         }
+    }
+
+    /**
+     * 指定コマ方向格納リスト取得
+     * @return
+     */
+    public ArrayList<Integer> getAllTargetDiscPos() {
+        return allTargetDiscPos;
     }
 }

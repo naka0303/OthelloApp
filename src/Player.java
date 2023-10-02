@@ -32,7 +32,7 @@ public class Player {
         this.turn = turn;
     }
 
-    // Getter
+    // getter
     public String getPlayerName() {
         return this.playerName;
     }
