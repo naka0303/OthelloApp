@@ -44,7 +44,6 @@ public class Main {
 
                 System.out.println("=====" + player1.getPlayerName() + "さんのターン！" + "=====");
 
-                // ArrayList<ArrayList<Integer>> allOtherDiscRowNoColumnNo = new ArrayList<>();
                 ArrayList<ArrayList<ArrayList<Integer>>> allOtherDiscRowNoColumnNo = new ArrayList<>();
 
                 // コマの配置場所の入力受付
@@ -85,8 +84,7 @@ public class Main {
                     int noCounter = 1;
                     while (!board.getSelfDiscFlg()) {
                         // 指定コマ探索
-                        // FIXME: 自コマで挟まれていなくても他コマが隣接していたらひっくり返ってしまうので要修正
-                        targetDiscRowNoColumnNo = board.seekTargetDisc(rowNo2int, columnNo2int, targetDiscPos, otherDisc, player1.getDiscColor(), noCounter);
+                        targetDiscRowNoColumnNo = board.addOtherDiscRowNoColumnNo(rowNo2int, columnNo2int, targetDiscPos, otherDisc, player1.getDiscColor(), noCounter);
                     
                         targetDiscRowNoColumnNoAsPos.add(targetDiscRowNoColumnNo);
 
@@ -102,8 +100,6 @@ public class Main {
 
                         noCounter++;
                     }
-
-                    System.out.println(targetDiscRowNoColumnNoAsPos);
 
                     // 全ての別コマ行番号/列番号/方向のリスト取得
                     allOtherDiscRowNoColumnNo.add(targetDiscRowNoColumnNoAsPos);
@@ -135,7 +131,6 @@ public class Main {
                 
                 System.out.println("=====" + player2.getPlayerName() + "さんのターン！" + "=====");
 
-                // ArrayList<ArrayList<Integer>> allOtherDiscRowNoColumnNo = new ArrayList<>();
                 ArrayList<ArrayList<ArrayList<Integer>>> allOtherDiscRowNoColumnNo = new ArrayList<>();
 
                 // コマの配置場所の入力受付
@@ -170,14 +165,12 @@ public class Main {
 
                 for (int targetDiscPos : allTargetDiscPos) {
                     board.initializeFlg();
-                    System.out.println(targetDiscPos);
                     ArrayList<Integer> targetDiscRowNoColumnNo = new ArrayList<>();
                     ArrayList<ArrayList<Integer>> targetDiscRowNoColumnNoAsPos = new ArrayList<>();
                     int noCounter = 1;
                     while (!board.getSelfDiscFlg()) {
                         // 指定コマ探索
-                        // FIXME: 自コマで挟まれていなくても他コマが隣接していたらひっくり返ってしまうので要修正
-                        targetDiscRowNoColumnNo = board.seekTargetDisc(rowNo2int, columnNo2int, targetDiscPos, otherDisc, player2.getDiscColor(), noCounter);
+                        targetDiscRowNoColumnNo = board.addOtherDiscRowNoColumnNo(rowNo2int, columnNo2int, targetDiscPos, otherDisc, player2.getDiscColor(), noCounter);
                     
                         targetDiscRowNoColumnNoAsPos.add(targetDiscRowNoColumnNo);
 
@@ -193,8 +186,6 @@ public class Main {
 
                         noCounter++;
                     }
-
-                    System.out.println(targetDiscRowNoColumnNoAsPos);
 
                     // 全ての別コマ行番号/列番号/方向のリスト取得
                     allOtherDiscRowNoColumnNo.add(targetDiscRowNoColumnNoAsPos);

@@ -164,235 +164,102 @@ public class Board {
     }
 
     /**
-     * 指定コマ探索
+     * 他コマ探索
+     * 
+     * @param seekDiscRowNo
+     * @param seekDiscColumnNo
+     * @param otherDisc
+     * @param selfDisc
+     */
+    private void seekOtherDisc(int seekDiscRowNo, int seekDiscColumnNo, String otherDisc, String selfDisc) {
+        if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(otherDisc)) {
+            selfDiscFlg = false;
+            setDiscFlg = false;
+            boardOutsideFlg = false;
+        } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(selfDisc)) {
+            selfDiscFlg = true;
+            setDiscFlg = false;
+            boardOutsideFlg = false;
+        } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals("-")) {
+            selfDiscFlg = false;
+            setDiscFlg = true;
+            boardOutsideFlg = false;
+        } else if (seekDiscRowNo >= 1 && seekDiscRowNo <= 8
+                   || seekDiscColumnNo >= 1 && seekDiscColumnNo <= 8) {
+            selfDiscFlg = false;
+            setDiscFlg = false;
+            boardOutsideFlg = true;
+        }
+    }
+
+    /**
+     * 他コマ行列番号リスト追加
      * 
      * @param rowNo
      * @param columnNo
-     * @param discPos
+     * @param otherDiscPos
+     * @param otherDisc
+     * @param selfDisc
+     * @param noCounter
      */
-    public ArrayList<Integer> seekTargetDisc(int rowNo, int columnNo, int otherDiscPos, String otherDisc, String selfDisc, int noCounter) {
-        ArrayList<Integer> seekDiscRowNoColumnNo = new ArrayList<>();
+    public ArrayList<Integer> addOtherDiscRowNoColumnNo(int rowNo, int columnNo, int otherDiscPos, String otherDisc, String selfDisc, int noCounter) {
+        ArrayList<Integer> otherDiscRowNoColumnNo = new ArrayList<>();
 
         // 上に指定コマがある場合
         if (otherDiscPos == discPosEnum.TOP.ordinal()) {
             seekDiscRowNo = rowNo-noCounter;
             seekDiscColumnNo = columnNo;
-            if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(otherDisc)) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(selfDisc)) {
-                selfDiscFlg = true;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals("-")) {
-                selfDiscFlg = false;
-                setDiscFlg = true;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (seekDiscRowNo >= 1 && seekDiscRowNo <= 8
-                       || seekDiscColumnNo >= 1 && seekDiscColumnNo <= 8) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = true;
-                return seekDiscRowNoColumnNo;
-            }
         }
 
         // 右上に指定コマがある
         if (otherDiscPos == discPosEnum.TOPRIGHT.ordinal()) {
             seekDiscRowNo = rowNo-noCounter;
             seekDiscColumnNo = columnNo+noCounter;
-            if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(otherDisc)) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(selfDisc)) {
-                selfDiscFlg = true;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals("-")) {
-                selfDiscFlg = false;
-                setDiscFlg = true;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (seekDiscRowNo >= 1 && seekDiscRowNo <= 8
-                       || seekDiscColumnNo >= 1 && seekDiscColumnNo <= 8) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = true;
-                return seekDiscRowNoColumnNo;
-            }
         }
 
         // 左上に指定コマがある場合
         if (otherDiscPos == discPosEnum.TOPLEFT.ordinal()) {
             seekDiscRowNo = rowNo-noCounter;
             seekDiscColumnNo = columnNo-noCounter;
-            if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(otherDisc)) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(selfDisc)) {
-                selfDiscFlg = true;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals("-")) {
-                selfDiscFlg = false;
-                setDiscFlg = true;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (seekDiscRowNo >= 1 && seekDiscRowNo <= 8
-                       || seekDiscColumnNo >= 1 && seekDiscColumnNo <= 8) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = true;
-                return seekDiscRowNoColumnNo;
-            }
         }
 
         // 下に指定コマがある場合
         if (otherDiscPos == discPosEnum.BOTTOM.ordinal()) {
             seekDiscRowNo = rowNo+noCounter;
             seekDiscColumnNo = columnNo;
-            if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(otherDisc)) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(selfDisc)) {
-                selfDiscFlg = true;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals("-")) {
-                selfDiscFlg = false;
-                setDiscFlg = true;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (seekDiscRowNo >= 1 && seekDiscRowNo <= 8
-                       || seekDiscColumnNo >= 1 && seekDiscColumnNo <= 8) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = true;
-                return seekDiscRowNoColumnNo;
-            }
         }
 
         // 右下に指定コマがある場合
         if (otherDiscPos == discPosEnum.BOTTOMRIGHT.ordinal()) {
             seekDiscRowNo = rowNo+noCounter;
             seekDiscColumnNo = columnNo+noCounter;
-            if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(otherDisc)) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(selfDisc)) {
-                selfDiscFlg = true;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals("-")) {
-                selfDiscFlg = false;
-                setDiscFlg = true;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (seekDiscRowNo >= 1 && seekDiscRowNo <= 8
-                       || seekDiscColumnNo >= 1 && seekDiscColumnNo <= 8) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = true;
-                return seekDiscRowNoColumnNo;
-            }
         }
 
         // 左下に指定コマがある場合
         if (otherDiscPos == discPosEnum.BOTTOMLEFT.ordinal()) {
             seekDiscRowNo = rowNo+noCounter;
             seekDiscColumnNo = columnNo-noCounter;
-            if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(otherDisc)) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(selfDisc)) {
-                selfDiscFlg = true;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals("-")) {
-                selfDiscFlg = false;
-                setDiscFlg = true;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (seekDiscRowNo >= 1 && seekDiscRowNo <= 8
-                       || seekDiscColumnNo >= 1 && seekDiscColumnNo <= 8) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = true;
-                return seekDiscRowNoColumnNo;
-            }
         }
 
         // 右に指定コマがある場合
         if (otherDiscPos == discPosEnum.RIGHT.ordinal()) {
             seekDiscRowNo = rowNo;
             seekDiscColumnNo = columnNo+noCounter;
-            if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(otherDisc)) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(selfDisc)) {
-                selfDiscFlg = true;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals("-")) {
-                selfDiscFlg = false;
-                setDiscFlg = true;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (seekDiscRowNo >= 1 && seekDiscRowNo <= 8
-                       || seekDiscColumnNo >= 1 && seekDiscColumnNo <= 8) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = true;
-                return seekDiscRowNoColumnNo;
-            }
         }
 
         // 左に指定コマがある場合
         if (otherDiscPos == discPosEnum.LEFT.ordinal()) {
             seekDiscRowNo = rowNo;
             seekDiscColumnNo = columnNo-noCounter;
-            if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(otherDisc)) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(selfDisc)) {
-                selfDiscFlg = true;
-                setDiscFlg = false;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals("-")) {
-                selfDiscFlg = false;
-                setDiscFlg = true;
-                boardOutsideFlg = false;
-                return seekDiscRowNoColumnNo;
-            } else if (seekDiscRowNo >= 1 && seekDiscRowNo <= 8
-                       || seekDiscColumnNo >= 1 && seekDiscColumnNo <= 8) {
-                selfDiscFlg = false;
-                setDiscFlg = false;
-                boardOutsideFlg = true;
-                return seekDiscRowNoColumnNo;
-            }
         }
 
-        seekDiscRowNoColumnNo.add(seekDiscRowNo);
-        seekDiscRowNoColumnNo.add(seekDiscColumnNo);
+        // 他コマ探索
+        seekOtherDisc(seekDiscRowNo, seekDiscColumnNo, otherDisc, selfDisc);
         
-        return seekDiscRowNoColumnNo;
+        otherDiscRowNoColumnNo.add(seekDiscRowNo);
+        otherDiscRowNoColumnNo.add(seekDiscColumnNo);
+        
+        return otherDiscRowNoColumnNo;
     }
 
     /*
