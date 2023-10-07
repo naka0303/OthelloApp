@@ -5,9 +5,9 @@ public class Player {
     private String playerName;
 
     /**
-     * コマの色
+     * コマ色
      */
-    private String discColor;
+    private String disc;
 
     /**
      * パス判定
@@ -24,8 +24,8 @@ public class Player {
         this.playerName = playerName;
     }
 
-    public void setDiscColor(String discColor) {
-        this.discColor = discColor;
+    public void setDisc(String disc) {
+        this.disc = disc;
     }
 
     public void setTurn(boolean turn) {
@@ -37,8 +37,8 @@ public class Player {
         return this.playerName;
     }
 
-    public String getDiscColor() {
-        return this.discColor;
+    public String getDisc() {
+        return this.disc;
     }
 
     public Boolean getTrun() {

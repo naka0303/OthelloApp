@@ -32,7 +32,7 @@ public class Board {
     /**
      * 指定コマ方向格納リスト
      */
-    private static ArrayList<Integer> allTargetDiscPos = new ArrayList<>();
+    private static ArrayList<Integer> allOtherDiscPos = new ArrayList<>();
 
     /**
      * 自コマ判定フラグ
@@ -42,7 +42,7 @@ public class Board {
     /**
      * コマ配置判定フラグ
      */
-    private static boolean setDiscFlg = false;
+    private static boolean emptyFlg = false;
 
     /**
      * 盤外判定フラグ
@@ -75,11 +75,11 @@ public class Board {
     }
 
     /**
-     * ターン切り替え初期化
+     * フラグ初期化
      */
     public void initializeFlg() {
         selfDiscFlg = false;
-        setDiscFlg = false;
+        emptyFlg = false;
         boardOutsideFlg = false;
     }
 
@@ -87,13 +87,19 @@ public class Board {
      * 
      */
     public void display() {
+        System.out.println("1 2 3 4 5 6 7 8");
+        int cnt = 1;
         for (String[] disc : boardList) {
             for (String d : disc) {
                 if (d != null) {
                     System.out.print(d + " ");
                 }
             }
+            if (cnt - 1 >= 1) {
+                System.out.print(cnt - 1);
+            }
             System.out.println();
+            cnt++;
         }
     }
 
@@ -114,49 +120,49 @@ public class Board {
      * @param columnNo
      * @param otherDisc
      */
-    public boolean isNextToTargetDisc(int rowNo, int columnNo, String disc) {
+    public boolean isNextToOtherDisc(int rowNo, int columnNo, String disc) {
         // 上に指定コマがあるかチェック
         if (boardList[rowNo-1][columnNo].equals(disc)) {
-            allTargetDiscPos.add(discPosEnum.TOP.ordinal());
+            allOtherDiscPos.add(discPosEnum.TOP.ordinal());
         }
 
         // 右上に指定コマがあるかチェック
         if (boardList[rowNo-1][columnNo+1].equals(disc)) {
-            allTargetDiscPos.add(discPosEnum.TOPRIGHT.ordinal());
+            allOtherDiscPos.add(discPosEnum.TOPRIGHT.ordinal());
         }
 
         // 左上に指定コマがあるかチェック
         if (boardList[rowNo-1][columnNo-1].equals(disc)) {
-            allTargetDiscPos.add(discPosEnum.TOPLEFT.ordinal());
+            allOtherDiscPos.add(discPosEnum.TOPLEFT.ordinal());
         }
 
         // 下に指定コマがあるかチェック
         if (boardList[rowNo+1][columnNo].equals(disc)) {
-            allTargetDiscPos.add(discPosEnum.BOTTOM.ordinal());
+            allOtherDiscPos.add(discPosEnum.BOTTOM.ordinal());
         }
 
         // 右下に指定コマがあるかチェック
         if (boardList[rowNo+1][columnNo+1].equals(disc)) {
-            allTargetDiscPos.add(discPosEnum.BOTTOMRIGHT.ordinal());
+            allOtherDiscPos.add(discPosEnum.BOTTOMRIGHT.ordinal());
         }
 
         // 左下に指定コマがあるかチェック
         if (boardList[rowNo+1][columnNo-1].equals(disc)) {
-            allTargetDiscPos.add(discPosEnum.BOTTOMLEFT.ordinal());
+            allOtherDiscPos.add(discPosEnum.BOTTOMLEFT.ordinal());
         }
 
         // 右に指定コマがあるかチェック
         if (boardList[rowNo][columnNo+1].equals(disc)) {
-            allTargetDiscPos.add(discPosEnum.RIGHT.ordinal());
+            allOtherDiscPos.add(discPosEnum.RIGHT.ordinal());
         }
 
         // 左に指定コマがあるかチェック
         if (boardList[rowNo][columnNo-1].equals(disc)) {
-            allTargetDiscPos.add(discPosEnum.LEFT.ordinal());
+            allOtherDiscPos.add(discPosEnum.LEFT.ordinal());
         }
 
         // 指定コマが隣接していなければそのままリターン
-        if (allTargetDiscPos.size() == 0) {
+        if (allOtherDiscPos.size() == 0) {
             return false;
         }
 
@@ -174,20 +180,20 @@ public class Board {
     private void seekOtherDisc(int seekDiscRowNo, int seekDiscColumnNo, String otherDisc, String selfDisc) {
         if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(otherDisc)) {
             selfDiscFlg = false;
-            setDiscFlg = false;
+            emptyFlg = false;
             boardOutsideFlg = false;
         } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals(selfDisc)) {
             selfDiscFlg = true;
-            setDiscFlg = false;
+            emptyFlg = false;
             boardOutsideFlg = false;
         } else if (boardList[seekDiscRowNo][seekDiscColumnNo].equals("-")) {
             selfDiscFlg = false;
-            setDiscFlg = true;
+            emptyFlg = true;
             boardOutsideFlg = false;
         } else if (seekDiscRowNo >= 1 && seekDiscRowNo <= 8
                    || seekDiscColumnNo >= 1 && seekDiscColumnNo <= 8) {
             selfDiscFlg = false;
-            setDiscFlg = false;
+            emptyFlg = false;
             boardOutsideFlg = true;
         }
     }
@@ -255,7 +261,7 @@ public class Board {
 
         // 他コマ探索
         seekOtherDisc(seekDiscRowNo, seekDiscColumnNo, otherDisc, selfDisc);
-        
+
         otherDiscRowNoColumnNo.add(seekDiscRowNo);
         otherDiscRowNoColumnNo.add(seekDiscColumnNo);
         
@@ -298,8 +304,8 @@ public class Board {
      * 指定コマ方向格納リスト取得
      * @return
      */
-    public ArrayList<Integer> getAllTargetDiscPos() {
-        return allTargetDiscPos;
+    public ArrayList<Integer> getAllOtherDiscPos() {
+        return allOtherDiscPos;
     }
 
     /**
@@ -312,8 +318,8 @@ public class Board {
     /**
      * コマ配置判定フラグ
      */
-    public boolean getSetDiscFlg() {
-        return setDiscFlg;
+    public boolean getEmptyFlg() {
+        return emptyFlg;
     }
 
     /** 
@@ -324,9 +330,9 @@ public class Board {
     }
 
     /**
-     * 指定コマ方向格納リスト初期化
+     * 他コマ方向格納リスト初期化
      */
-    public void initializeAllTargetDiscPos() {
-        allTargetDiscPos = new ArrayList<>();
+    public void initializeAllOtherDiscPos() {
+        allOtherDiscPos = new ArrayList<>();
     }
 }
