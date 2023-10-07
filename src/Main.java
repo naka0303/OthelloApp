@@ -1,5 +1,6 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -39,9 +40,12 @@ public class Main {
             // プレイヤー1のターン中は以下ループ
             player1.setTurn(true);
             while (player1.getTrun()) {
+                board.initializeAllTargetDiscPos();
+
                 System.out.println("=====" + player1.getPlayerName() + "さんのターン！" + "=====");
 
-                ArrayList<ArrayList<Integer>> allOtherDiscRowNoColumnNo = new ArrayList<>();
+                // ArrayList<ArrayList<Integer>> allOtherDiscRowNoColumnNo = new ArrayList<>();
+                ArrayList<ArrayList<ArrayList<Integer>>> allOtherDiscRowNoColumnNo = new ArrayList<>();
 
                 // コマの配置場所の入力受付
                 System.out.println("コマを配置したい行番号を入力してください。");
@@ -74,31 +78,47 @@ public class Main {
                 ArrayList<Integer> allTargetDiscPos = board.getAllTargetDiscPos();
 
                 for (int targetDiscPos : allTargetDiscPos) {
-                    for (int noCounter = 1; noCounter <= 7; noCounter++) {
-                        // 探索先がオセロ盤面外になったら探索終了
-                        if (rowNo2int + noCounter > 8
-                            || columnNo2int + noCounter > 8
-                            || rowNo2int - noCounter < 1
-                            || columnNo2int - noCounter < 1) {
-                                break;
-                            }
-
+                    board.initializeFlg();
+                    System.out.println(targetDiscPos);
+                    ArrayList<Integer> targetDiscRowNoColumnNo = new ArrayList<>();
+                    ArrayList<ArrayList<Integer>> targetDiscRowNoColumnNoAsPos = new ArrayList<>();
+                    int noCounter = 1;
+                    while (!board.getSelfDiscFlg()) {
                         // 指定コマ探索
                         // FIXME: 自コマで挟まれていなくても他コマが隣接していたらひっくり返ってしまうので要修正
-                        ArrayList<Integer> targetDiscRowNoColumnNo = board.seekTargetDisc(rowNo2int, columnNo2int, targetDiscPos, otherDisc, noCounter);
+                        targetDiscRowNoColumnNo = board.seekTargetDisc(rowNo2int, columnNo2int, targetDiscPos, otherDisc, player1.getDiscColor(), noCounter);
+                    
+                        targetDiscRowNoColumnNoAsPos.add(targetDiscRowNoColumnNo);
 
-                        // 全ての別コマ行番号/列番号/方向のリスト取得
-                        allOtherDiscRowNoColumnNo.add(targetDiscRowNoColumnNo);
+                        if (board.getSelfDiscFlg()) {
+                            break;
+                        }
+
+                        if (board.getSetDiscFlg() || board.getBoardOutsideFlg()) {
+                            ArrayList<ArrayList<Integer>> clearVal = new ArrayList<>();
+                            targetDiscRowNoColumnNoAsPos = clearVal;
+                            break;
+                        }
+
+                        noCounter++;
                     }
+
+                    System.out.println(targetDiscRowNoColumnNoAsPos);
+
+                    // 全ての別コマ行番号/列番号/方向のリスト取得
+                    allOtherDiscRowNoColumnNo.add(targetDiscRowNoColumnNoAsPos);
                 }
 
-                for (ArrayList<Integer> otherDiscRowNoColumnNo : allOtherDiscRowNoColumnNo) {
-                    System.out.println(otherDiscRowNoColumnNo);
-                    int otherDiscRowNo = otherDiscRowNoColumnNo.get(0);
-                    int otherDiscColumnNo = otherDiscRowNoColumnNo.get(1);
+                for (ArrayList<ArrayList<Integer>> otherDiscRowNoColumnNo : allOtherDiscRowNoColumnNo) {
+                    for (ArrayList<Integer> rowNoColumnNo : otherDiscRowNoColumnNo) {
+                        if (rowNoColumnNo.size() != 0) {
+                            int otherDiscRowNo = rowNoColumnNo.get(0);
+                            int otherDiscColumnNo = rowNoColumnNo.get(1);
 
-                    // コマ配置(別コマをひっくり返す)
-                    board.setDisc(otherDiscRowNo, otherDiscColumnNo, player1.getDiscColor());
+                            // コマ配置(別コマをひっくり返す)
+                            board.setDisc(otherDiscRowNo, otherDiscColumnNo, player1.getDiscColor());
+                        }
+                    }
                 }
 
                 // オセロ盤面表示
@@ -111,9 +131,12 @@ public class Main {
             // プレイヤー2のターン中は以下ループ
             player2.setTurn(true);
             while (player2.getTrun()) {
+                board.initializeAllTargetDiscPos();
+                
                 System.out.println("=====" + player2.getPlayerName() + "さんのターン！" + "=====");
 
-                ArrayList<ArrayList<Integer>> allOtherDiscRowNoColumnNo = new ArrayList<>();
+                // ArrayList<ArrayList<Integer>> allOtherDiscRowNoColumnNo = new ArrayList<>();
+                ArrayList<ArrayList<ArrayList<Integer>>> allOtherDiscRowNoColumnNo = new ArrayList<>();
 
                 // コマの配置場所の入力受付
                 System.out.println("コマを配置したい行番号を入力してください。");
@@ -146,31 +169,47 @@ public class Main {
                 ArrayList<Integer> allTargetDiscPos = board.getAllTargetDiscPos();
 
                 for (int targetDiscPos : allTargetDiscPos) {
-                    for (int noCounter = 1; noCounter <= 7; noCounter++) {
-                        // 探索先がオセロ盤面外になったら探索終了
-                        if (rowNo2int + noCounter > 8
-                            || columnNo2int + noCounter > 8
-                            || rowNo2int - noCounter < 1
-                            || columnNo2int - noCounter < 1) {
-                                break;
-                            }
-
+                    board.initializeFlg();
+                    System.out.println(targetDiscPos);
+                    ArrayList<Integer> targetDiscRowNoColumnNo = new ArrayList<>();
+                    ArrayList<ArrayList<Integer>> targetDiscRowNoColumnNoAsPos = new ArrayList<>();
+                    int noCounter = 1;
+                    while (!board.getSelfDiscFlg()) {
                         // 指定コマ探索
                         // FIXME: 自コマで挟まれていなくても他コマが隣接していたらひっくり返ってしまうので要修正
-                        ArrayList<Integer> targetDiscRowNoColumnNo = board.seekTargetDisc(rowNo2int, columnNo2int, targetDiscPos, otherDisc, noCounter);
+                        targetDiscRowNoColumnNo = board.seekTargetDisc(rowNo2int, columnNo2int, targetDiscPos, otherDisc, player2.getDiscColor(), noCounter);
+                    
+                        targetDiscRowNoColumnNoAsPos.add(targetDiscRowNoColumnNo);
 
-                        // 全ての別コマ行番号/列番号/方向のリスト取得
-                        allOtherDiscRowNoColumnNo.add(targetDiscRowNoColumnNo);
+                        if (board.getSelfDiscFlg()) {
+                            break;
+                        }
+
+                        if (board.getSetDiscFlg() || board.getBoardOutsideFlg()) {
+                            ArrayList<ArrayList<Integer>> clearVal = new ArrayList<>();
+                            targetDiscRowNoColumnNoAsPos = clearVal;
+                            break;
+                        }
+
+                        noCounter++;
                     }
+
+                    System.out.println(targetDiscRowNoColumnNoAsPos);
+
+                    // 全ての別コマ行番号/列番号/方向のリスト取得
+                    allOtherDiscRowNoColumnNo.add(targetDiscRowNoColumnNoAsPos);
                 }
 
-                for (ArrayList<Integer> otherDiscRowNoColumnNo : allOtherDiscRowNoColumnNo) {
-                    System.out.println(otherDiscRowNoColumnNo);
-                    int otherDiscRowNo = otherDiscRowNoColumnNo.get(0);
-                    int otherDiscColumnNo = otherDiscRowNoColumnNo.get(1);
+                for (ArrayList<ArrayList<Integer>> otherDiscRowNoColumnNo : allOtherDiscRowNoColumnNo) {
+                    for (ArrayList<Integer> rowNoColumnNo : otherDiscRowNoColumnNo) {
+                        if (rowNoColumnNo.size() != 0) {
+                            int otherDiscRowNo = rowNoColumnNo.get(0);
+                            int otherDiscColumnNo = rowNoColumnNo.get(1);
 
-                    // コマ配置(別コマをひっくり返す)
-                    board.setDisc(otherDiscRowNo, otherDiscColumnNo, player2.getDiscColor());
+                            // コマ配置(別コマをひっくり返す)
+                            board.setDisc(otherDiscRowNo, otherDiscColumnNo, player2.getDiscColor());
+                        }
+                    }
                 }
 
                 // オセロ盤面表示
