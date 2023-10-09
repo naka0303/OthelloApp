@@ -71,7 +71,7 @@ public class Board {
         setDisc(5, 5, "B");
 
         // コンソールに盤面表示
-        display();
+        display(2, 2);
     }
 
     /**
@@ -86,7 +86,8 @@ public class Board {
     /** コンソールに盤面表示
      * 
      */
-    public void display() {
+    public void display(Integer blackNum, Integer whiteNum) {
+        System.out.println("黒コマ数：" + blackNum + " " + "白コマ数：" + whiteNum);
         System.out.println("1 2 3 4 5 6 7 8");
         int cnt = 1;
         for (String[] disc : boardList) {
@@ -122,43 +123,51 @@ public class Board {
      */
     public boolean isNextToOtherDisc(int rowNo, int columnNo, String disc) {
         // 上に指定コマがあるかチェック
-        if (boardList[rowNo-1][columnNo].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.TOP.ordinal());
+        if ((1 <= rowNo-1 && rowNo-1 <= 8) && (1 <= columnNo && columnNo <= 8)
+             && boardList[rowNo-1][columnNo].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.TOP.ordinal());
         }
 
         // 右上に指定コマがあるかチェック
-        if (boardList[rowNo-1][columnNo+1].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.TOPRIGHT.ordinal());
+        if ((1 <= rowNo-1 && rowNo-1 <= 8) && (1 <= columnNo+1 && columnNo+1 <= 8)
+             && boardList[rowNo-1][columnNo+1].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.TOPRIGHT.ordinal());
         }
 
         // 左上に指定コマがあるかチェック
-        if (boardList[rowNo-1][columnNo-1].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.TOPLEFT.ordinal());
+        if ((1 <= rowNo-1 && rowNo-1 <= 8) && (1 <= columnNo-1 && columnNo-1 <= 8)
+             && boardList[rowNo-1][columnNo-1].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.TOPLEFT.ordinal());
         }
 
         // 下に指定コマがあるかチェック
-        if (boardList[rowNo+1][columnNo].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.BOTTOM.ordinal());
+        if ((1 <= rowNo+1 && rowNo+1 <= 8) && (1 <= columnNo && columnNo <= 8)
+             && boardList[rowNo+1][columnNo].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.BOTTOM.ordinal());
         }
 
         // 右下に指定コマがあるかチェック
-        if (boardList[rowNo+1][columnNo+1].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.BOTTOMRIGHT.ordinal());
+        if ((1 <= rowNo+1 && rowNo+1 <= 8) && (1 <= columnNo+1 && columnNo+1 <= 8)
+             && boardList[rowNo+1][columnNo+1].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.BOTTOMRIGHT.ordinal());
         }
 
         // 左下に指定コマがあるかチェック
-        if (boardList[rowNo+1][columnNo-1].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.BOTTOMLEFT.ordinal());
+        if ((1 <= rowNo+1 && rowNo+1 <= 8) && (1 <= columnNo-1 && columnNo-1 <= 8)
+             && boardList[rowNo+1][columnNo-1].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.BOTTOMLEFT.ordinal());
         }
 
         // 右に指定コマがあるかチェック
-        if (boardList[rowNo][columnNo+1].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.RIGHT.ordinal());
+        if ((1 <= rowNo && rowNo <= 8) && (1 <= columnNo+1 && columnNo+1 <= 8)
+             && boardList[rowNo][columnNo+1].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.RIGHT.ordinal());
         }
 
         // 左に指定コマがあるかチェック
-        if (boardList[rowNo][columnNo-1].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.LEFT.ordinal());
+        if ((1 <= rowNo && rowNo <= 8) && (1 <= columnNo-1 && columnNo-1 <= 8)
+             && boardList[rowNo][columnNo-1].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.LEFT.ordinal());
         }
 
         // 指定コマが隣接していなければそのままリターン
@@ -291,7 +300,7 @@ public class Board {
      * 
      * @param discColor
      */
-    public String getOtherDisc(String discColor) {
+    public String getOtherDiscColor(String discColor) {
         // 指定を特定
         if (discColor.equals("B")) {
             return "W";
@@ -329,10 +338,23 @@ public class Board {
         return boardOutsideFlg;
     }
 
+    public String[][] getBoardList() {
+        return boardList;
+    }
+
     /**
      * 他コマ方向格納リスト初期化
      */
     public void initializeAllOtherDiscPos() {
         allOtherDiscPos = new ArrayList<>();
+    }
+
+    public boolean judgeGameFinish(Integer blackNum, Integer whiteNum) {
+        // ゲーム終了判定
+        if (blackNum + whiteNum != 64) {
+            return false;
+        }
+
+        return true;
     }
 }
