@@ -76,11 +76,20 @@ public class Main {
             String columnNo = scan.nextLine();
             int columnNo2int = Integer.parseInt(columnNo);
 
-            // 自コマ配置
-            board.setDisc(rowNo2int, columnNo2int, discColor);
-
             // 他色取得
             String otherDisc = board.getOtherDiscColor(discColor);
+
+            // コマ配置可否チェック
+            boolean isSetDiscFlg = board.isSetDisc(rowNo2int, columnNo2int);
+
+            // 指定したマスにコマが置いてある場合は探索終了
+            if (!isSetDiscFlg) {
+                System.out.println("指定したマスには既にコマが配置されています。");
+
+                retryFlg = true;
+
+                continue;
+            }
 
             // 他コマ隣接チェック
             boolean isNextToOtherDiscFlg = board.isNextToOtherDisc(rowNo2int, columnNo2int, otherDisc);
@@ -88,9 +97,6 @@ public class Main {
             // 他コマが隣接していない場合は探索終了
             if (!isNextToOtherDiscFlg) {
                 System.out.println("引っくり返せるコマがありません。");
-
-                // コマ配置取消
-                board.setDisc(rowNo2int, columnNo2int, "-");
 
                 retryFlg = true;
 
@@ -112,36 +118,50 @@ public class Main {
                 ArrayList<ArrayList<Integer>> otherDiscRowNoColumnNoAsPos = new ArrayList<>();
                 
                 int noCounter = 1;
+                boolean selfDiscFlg = false;
+                boolean emptyFlg = false;
+                boolean boardOutsideFlg = false;
                 while (!board.getSelfDiscFlg()) {
                     // 他コマ行列番号リスト取得
                     otherDiscRowNoColumnNo = board.addOtherDiscRowNoColumnNo(rowNo2int, columnNo2int, targetDiscPos, otherDisc, discColor, noCounter);
                     
-                    // 全他コマ行列番号リストに、他コマ行列番号リストを格納kakunou
+                    // 全他コマ行列番号リストに、他コマ行列番号リストを格納
                     otherDiscRowNoColumnNoAsPos.add(otherDiscRowNoColumnNo);
 
-                    boolean selfDiscFlg = board.getSelfDiscFlg();
-                    boolean emptyFlg = board.getEmptyFlg();
-                    boolean boardOutsideFlg = board.getBoardOutsideFlg();
+                    selfDiscFlg = board.getSelfDiscFlg();
+                    emptyFlg = board.getEmptyFlg();
+                    boardOutsideFlg = board.getBoardOutsideFlg();
 
-                    // 自コマを検出したら処理終了
+                    // 自コマを検出したら探索終了
                     if (selfDiscFlg) {
                         break;
                     }
 
-                    // 探索先にコマが配置されていないか、探索先が盤外だったら、全他コマ行列番号リストを初期化し処理終了
-                    if (emptyFlg|| boardOutsideFlg) {
+                    // 探索先にコマが配置されていないか、探索先が盤外だったら、全他コマ行列番号リストを初期化し探索終了
+                    if (emptyFlg || boardOutsideFlg) {
                         ArrayList<ArrayList<Integer>> clearVal = new ArrayList<>();
                         otherDiscRowNoColumnNoAsPos = clearVal;
                         break;
                     }
-
                     noCounter++;
+                }
+
+                if(!selfDiscFlg) {
+                    continue;
                 }
 
                 // 反転対象行列番号リストに、全他コマ行列番号リストを追加
                 allOtherDiscRowNoColumnNo.add(otherDiscRowNoColumnNoAsPos);
             }
 
+            if (allOtherDiscRowNoColumnNo.size() == 0) {
+                System.out.println("探索結果、ひっくり返せるコマがありません。");
+
+                retryFlg = true;
+                
+                continue;
+            }
+            
             for (ArrayList<ArrayList<Integer>> otherDiscRowNoColumnNo : allOtherDiscRowNoColumnNo) {
                 for (ArrayList<Integer> rowNoColumnNo : otherDiscRowNoColumnNo) {
                     if (rowNoColumnNo.size() != 0) {
@@ -149,6 +169,7 @@ public class Main {
                         int otherDiscColumnNo = rowNoColumnNo.get(1);
 
                         // コマ配置(他コマをひっくり返す)
+                        board.setDisc(rowNo2int, columnNo2int, discColor);
                         board.setDisc(otherDiscRowNo, otherDiscColumnNo, discColor);
                     }
                 }
@@ -174,6 +195,8 @@ public class Main {
                 }
                 break;
             }
+
+            retryFlg = false;
         }
     }
 }
