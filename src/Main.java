@@ -6,10 +6,9 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        boolean checkResult = false;
-
         // インスタンス化
         Board board = new Board();
+        Disc disc = new Disc(2, 2);
         Player player1 = new Player();
         Player player2 = new Player();
         Scanner scan = new Scanner(System.in);
@@ -20,10 +19,10 @@ public class Main {
         System.out.println("プレイヤー2の名前を入力してください");
         String player2Name = scan.nextLine();
         player1.setPlayerName(player1Name);
-        player1.setDisc("W");
+        player1.setDiscColor("W");
         player1.setTurn(false);
         player2.setPlayerName(player2Name);
-        player2.setDisc("B");
+        player2.setDiscColor("B");
         player2.setTurn(false);
 
         // オセロ盤面初期状態
@@ -49,16 +48,16 @@ public class Main {
             player2TurnFlg = player2.getTrun();
 
             String playerName = "";
-            String disc = "";
+            String discColor = "";
             if (player1TurnFlg) {
                 playerName = player1.getPlayerName();
-                disc = player1.getDisc();
+                discColor = player1.getDiscColor();
             } else {
                 playerName = player2.getPlayerName();
-                disc = player2.getDisc();
+                discColor = player2.getDiscColor();
             }
 
-            System.out.println("=====" + playerName + "さんのターン！" + "=====");
+            System.out.println("=====" + playerName + "さん(" + discColor + ")のターン！" + "=====");
 
             // 反転対象行列番号リスト初期化
             ArrayList<ArrayList<ArrayList<Integer>>> allOtherDiscRowNoColumnNo = new ArrayList<>();
@@ -72,10 +71,10 @@ public class Main {
             int columnNo2int = Integer.parseInt(columnNo);
 
             // 自コマ配置
-            board.setDisc(rowNo2int, columnNo2int, disc);
+            board.setDisc(rowNo2int, columnNo2int, discColor);
 
             // 他色取得
-            String otherDisc = board.getOtherDisc(disc);
+            String otherDisc = board.getOtherDiscColor(discColor);
 
             // 他コマ隣接チェック
             boolean isNextToOtherDiscFlg = board.isNextToOtherDisc(rowNo2int, columnNo2int, otherDisc);
@@ -107,7 +106,7 @@ public class Main {
                 int noCounter = 1;
                 while (!board.getSelfDiscFlg()) {
                     // 他コマ行列番号リスト取得
-                    otherDiscRowNoColumnNo = board.addOtherDiscRowNoColumnNo(rowNo2int, columnNo2int, targetDiscPos, otherDisc, disc, noCounter);
+                    otherDiscRowNoColumnNo = board.addOtherDiscRowNoColumnNo(rowNo2int, columnNo2int, targetDiscPos, otherDisc, discColor, noCounter);
                     
                     // 全他コマ行列番号リストに、他コマ行列番号リストを格納kakunou
                     otherDiscRowNoColumnNoAsPos.add(otherDiscRowNoColumnNo);
@@ -142,13 +141,31 @@ public class Main {
                         int otherDiscColumnNo = rowNoColumnNo.get(1);
 
                         // コマ配置(他コマをひっくり返す)
-                        board.setDisc(otherDiscRowNo, otherDiscColumnNo, disc);
+                        board.setDisc(otherDiscRowNo, otherDiscColumnNo, discColor);
                     }
                 }
             }
 
+            // コマ数算出
+            String[][] boardList = board.getBoardList();
+            disc.calcDiscNum(boardList);
+
             // オセロ盤面表示
-            board.display();
+            Integer blackNum = disc.getBlackNum();
+            Integer whiteNum = disc.getWhiteNum();
+            board.display(blackNum, whiteNum);
+
+            // 勝敗判定
+            boolean judgeGameFinishFlg = board.judgeGameFinish(blackNum, whiteNum);
+
+            if (judgeGameFinishFlg) {
+                if (blackNum > whiteNum) {
+                    System.out.println("黒の勝利！");
+                } else if (whiteNum > blackNum) {
+                    System.out.println("白の勝利！");
+                }
+                break;
+            }
         }
     }
 }

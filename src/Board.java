@@ -71,7 +71,7 @@ public class Board {
         setDisc(5, 5, "B");
 
         // コンソールに盤面表示
-        display();
+        display(2, 2);
     }
 
     /**
@@ -86,7 +86,8 @@ public class Board {
     /** コンソールに盤面表示
      * 
      */
-    public void display() {
+    public void display(Integer blackNum, Integer whiteNum) {
+        System.out.println("黒コマ数：" + blackNum + " " + "白コマ数：" + whiteNum);
         System.out.println("1 2 3 4 5 6 7 8");
         int cnt = 1;
         for (String[] disc : boardList) {
@@ -120,6 +121,7 @@ public class Board {
      * @param columnNo
      * @param otherDisc
      */
+    // FIXME: 1行目にコマを置くと上チェックでエラー発生する
     public boolean isNextToOtherDisc(int rowNo, int columnNo, String disc) {
         // 上に指定コマがあるかチェック
         if (boardList[rowNo-1][columnNo].equals(disc)) {
@@ -291,7 +293,7 @@ public class Board {
      * 
      * @param discColor
      */
-    public String getOtherDisc(String discColor) {
+    public String getOtherDiscColor(String discColor) {
         // 指定を特定
         if (discColor.equals("B")) {
             return "W";
@@ -329,10 +331,23 @@ public class Board {
         return boardOutsideFlg;
     }
 
+    public String[][] getBoardList() {
+        return boardList;
+    }
+
     /**
      * 他コマ方向格納リスト初期化
      */
     public void initializeAllOtherDiscPos() {
         allOtherDiscPos = new ArrayList<>();
+    }
+
+    public boolean judgeGameFinish(Integer blackNum, Integer whiteNum) {
+        // ゲーム終了判定
+        if (blackNum + whiteNum != 64) {
+            return false;
+        }
+
+        return true;
     }
 }
