@@ -121,46 +121,53 @@ public class Board {
      * @param columnNo
      * @param otherDisc
      */
-    // FIXME: 1行目にコマを置くと上チェックでエラー発生する
     public boolean isNextToOtherDisc(int rowNo, int columnNo, String disc) {
         // 上に指定コマがあるかチェック
-        if (boardList[rowNo-1][columnNo].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.TOP.ordinal());
+        if ((1 <= rowNo-1 && rowNo-1 <= 8) && (1 <= columnNo && columnNo <= 8)
+             && boardList[rowNo-1][columnNo].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.TOP.ordinal());
         }
 
         // 右上に指定コマがあるかチェック
-        if (boardList[rowNo-1][columnNo+1].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.TOPRIGHT.ordinal());
+        if ((1 <= rowNo-1 && rowNo-1 <= 8) && (1 <= columnNo+1 && columnNo+1 <= 8)
+             && boardList[rowNo-1][columnNo+1].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.TOPRIGHT.ordinal());
         }
 
         // 左上に指定コマがあるかチェック
-        if (boardList[rowNo-1][columnNo-1].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.TOPLEFT.ordinal());
+        if ((1 <= rowNo-1 && rowNo-1 <= 8) && (1 <= columnNo-1 && columnNo-1 <= 8)
+             && boardList[rowNo-1][columnNo-1].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.TOPLEFT.ordinal());
         }
 
         // 下に指定コマがあるかチェック
-        if (boardList[rowNo+1][columnNo].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.BOTTOM.ordinal());
+        if ((1 <= rowNo+1 && rowNo+1 <= 8) && (1 <= columnNo && columnNo <= 8)
+             && boardList[rowNo+1][columnNo].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.BOTTOM.ordinal());
         }
 
         // 右下に指定コマがあるかチェック
-        if (boardList[rowNo+1][columnNo+1].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.BOTTOMRIGHT.ordinal());
+        if ((1 <= rowNo+1 && rowNo+1 <= 8) && (1 <= columnNo+1 && columnNo+1 <= 8)
+             && boardList[rowNo+1][columnNo+1].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.BOTTOMRIGHT.ordinal());
         }
 
         // 左下に指定コマがあるかチェック
-        if (boardList[rowNo+1][columnNo-1].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.BOTTOMLEFT.ordinal());
+        if ((1 <= rowNo+1 && rowNo+1 <= 8) && (1 <= columnNo-1 && columnNo-1 <= 8)
+             && boardList[rowNo+1][columnNo-1].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.BOTTOMLEFT.ordinal());
         }
 
         // 右に指定コマがあるかチェック
-        if (boardList[rowNo][columnNo+1].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.RIGHT.ordinal());
+        if ((1 <= rowNo && rowNo <= 8) && (1 <= columnNo+1 && columnNo+1 <= 8)
+             && boardList[rowNo][columnNo+1].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.RIGHT.ordinal());
         }
 
         // 左に指定コマがあるかチェック
-        if (boardList[rowNo][columnNo-1].equals(disc)) {
-            allOtherDiscPos.add(discPosEnum.LEFT.ordinal());
+        if ((1 <= rowNo && rowNo <= 8) && (1 <= columnNo-1 && columnNo-1 <= 8)
+             && boardList[rowNo][columnNo-1].equals(disc)) {
+                allOtherDiscPos.add(discPosEnum.LEFT.ordinal());
         }
 
         // 指定コマが隣接していなければそのままリターン
