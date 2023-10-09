@@ -9,7 +9,7 @@ public class Board {
     private static String[][] boardList;
 
     /**
-     * 指定コマ位置特定用enum
+     * 他コマ位置特定用enum
      */
     private static enum discPosEnum {
         TOP,
@@ -30,7 +30,7 @@ public class Board {
     private static int seekDiscPos = -1;
 
     /**
-     * 指定コマ方向格納リスト
+     * 他コマ方向格納リスト
      */
     private static ArrayList<Integer> allOtherDiscPos = new ArrayList<>();
 
@@ -115,62 +115,76 @@ public class Board {
     }
 
     /**
-     * 指定コマ隣接チェック
+     * コマ配置可否チェック
+     *
+     * @param rowNo
+     * @param columnNo
+     */
+    public boolean isSetDisc(int rowNo, int columnNo) {
+        if (!boardList[rowNo][columnNo].equals("-")) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 他隣接チェック
      * 
      * @param rowNo
      * @param columnNo
      * @param otherDisc
      */
-    public boolean isNextToOtherDisc(int rowNo, int columnNo, String disc) {
-        // 上に指定コマがあるかチェック
+    public boolean isNextToOtherDisc(int rowNo, int columnNo, String otherDisc) {
+        // 上に他コマがあるかチェック
         if ((1 <= rowNo-1 && rowNo-1 <= 8) && (1 <= columnNo && columnNo <= 8)
-             && boardList[rowNo-1][columnNo].equals(disc)) {
+             && boardList[rowNo-1][columnNo].equals(otherDisc)) {
                 allOtherDiscPos.add(discPosEnum.TOP.ordinal());
         }
 
-        // 右上に指定コマがあるかチェック
+        // 右上に他コマがあるかチェック
         if ((1 <= rowNo-1 && rowNo-1 <= 8) && (1 <= columnNo+1 && columnNo+1 <= 8)
-             && boardList[rowNo-1][columnNo+1].equals(disc)) {
+             && boardList[rowNo-1][columnNo+1].equals(otherDisc)) {
                 allOtherDiscPos.add(discPosEnum.TOPRIGHT.ordinal());
         }
 
-        // 左上に指定コマがあるかチェック
+        // 左上に他コマがあるかチェック
         if ((1 <= rowNo-1 && rowNo-1 <= 8) && (1 <= columnNo-1 && columnNo-1 <= 8)
-             && boardList[rowNo-1][columnNo-1].equals(disc)) {
+             && boardList[rowNo-1][columnNo-1].equals(otherDisc)) {
                 allOtherDiscPos.add(discPosEnum.TOPLEFT.ordinal());
         }
 
-        // 下に指定コマがあるかチェック
+        // 下に他コマがあるかチェック
         if ((1 <= rowNo+1 && rowNo+1 <= 8) && (1 <= columnNo && columnNo <= 8)
-             && boardList[rowNo+1][columnNo].equals(disc)) {
+             && boardList[rowNo+1][columnNo].equals(otherDisc)) {
                 allOtherDiscPos.add(discPosEnum.BOTTOM.ordinal());
         }
 
-        // 右下に指定コマがあるかチェック
+        // 右下に他コマがあるかチェック
         if ((1 <= rowNo+1 && rowNo+1 <= 8) && (1 <= columnNo+1 && columnNo+1 <= 8)
-             && boardList[rowNo+1][columnNo+1].equals(disc)) {
+             && boardList[rowNo+1][columnNo+1].equals(otherDisc)) {
                 allOtherDiscPos.add(discPosEnum.BOTTOMRIGHT.ordinal());
         }
 
-        // 左下に指定コマがあるかチェック
+        // 左下に他コマがあるかチェック
         if ((1 <= rowNo+1 && rowNo+1 <= 8) && (1 <= columnNo-1 && columnNo-1 <= 8)
-             && boardList[rowNo+1][columnNo-1].equals(disc)) {
+             && boardList[rowNo+1][columnNo-1].equals(otherDisc)) {
                 allOtherDiscPos.add(discPosEnum.BOTTOMLEFT.ordinal());
         }
 
-        // 右に指定コマがあるかチェック
+        // 右に他コマがあるかチェック
         if ((1 <= rowNo && rowNo <= 8) && (1 <= columnNo+1 && columnNo+1 <= 8)
-             && boardList[rowNo][columnNo+1].equals(disc)) {
+             && boardList[rowNo][columnNo+1].equals(otherDisc)) {
                 allOtherDiscPos.add(discPosEnum.RIGHT.ordinal());
         }
 
-        // 左に指定コマがあるかチェック
+        // 左に他コマがあるかチェック
         if ((1 <= rowNo && rowNo <= 8) && (1 <= columnNo-1 && columnNo-1 <= 8)
-             && boardList[rowNo][columnNo-1].equals(disc)) {
+             && boardList[rowNo][columnNo-1].equals(otherDisc)) {
                 allOtherDiscPos.add(discPosEnum.LEFT.ordinal());
         }
 
-        // 指定コマが隣接していなければそのままリターン
+        // 他コマが隣接していなければそのままリターン
         if (allOtherDiscPos.size() == 0) {
             return false;
         }
@@ -220,49 +234,49 @@ public class Board {
     public ArrayList<Integer> addOtherDiscRowNoColumnNo(int rowNo, int columnNo, int otherDiscPos, String otherDisc, String selfDisc, int noCounter) {
         ArrayList<Integer> otherDiscRowNoColumnNo = new ArrayList<>();
 
-        // 上に指定コマがある場合
+        // 上に他コマがある場合
         if (otherDiscPos == discPosEnum.TOP.ordinal()) {
             seekDiscRowNo = rowNo-noCounter;
             seekDiscColumnNo = columnNo;
         }
 
-        // 右上に指定コマがある
+        // 右上に他コマがある
         if (otherDiscPos == discPosEnum.TOPRIGHT.ordinal()) {
             seekDiscRowNo = rowNo-noCounter;
             seekDiscColumnNo = columnNo+noCounter;
         }
 
-        // 左上に指定コマがある場合
+        // 左上に他コマがある場合
         if (otherDiscPos == discPosEnum.TOPLEFT.ordinal()) {
             seekDiscRowNo = rowNo-noCounter;
             seekDiscColumnNo = columnNo-noCounter;
         }
 
-        // 下に指定コマがある場合
+        // 下に他コマがある場合
         if (otherDiscPos == discPosEnum.BOTTOM.ordinal()) {
             seekDiscRowNo = rowNo+noCounter;
             seekDiscColumnNo = columnNo;
         }
 
-        // 右下に指定コマがある場合
+        // 右下に他コマがある場合
         if (otherDiscPos == discPosEnum.BOTTOMRIGHT.ordinal()) {
             seekDiscRowNo = rowNo+noCounter;
             seekDiscColumnNo = columnNo+noCounter;
         }
 
-        // 左下に指定コマがある場合
+        // 左下に他コマがある場合
         if (otherDiscPos == discPosEnum.BOTTOMLEFT.ordinal()) {
             seekDiscRowNo = rowNo+noCounter;
             seekDiscColumnNo = columnNo-noCounter;
         }
 
-        // 右に指定コマがある場合
+        // 右に他コマがある場合
         if (otherDiscPos == discPosEnum.RIGHT.ordinal()) {
             seekDiscRowNo = rowNo;
             seekDiscColumnNo = columnNo+noCounter;
         }
 
-        // 左に指定コマがある場合
+        // 左に他コマがある場合
         if (otherDiscPos == discPosEnum.LEFT.ordinal()) {
             seekDiscRowNo = rowNo;
             seekDiscColumnNo = columnNo-noCounter;
@@ -278,14 +292,14 @@ public class Board {
     }
 
     /*
-     * 指定コマ方向取得
+     * 他コマ方向取得
      */
     public int getTargetDiscPos() {
         return seekDiscPos;
     }
 
     /**
-     * 指定コマ行番号/列番号/方向のリスト返却
+     * 他コマ行番号/列番号/方向のリスト返却
      */
     public ArrayList<Integer> getTargetDiscPosRowNoColumnNo() {
         ArrayList<Integer> targetDiscPosRowNoColumnNo = new ArrayList<>();
@@ -310,7 +324,7 @@ public class Board {
     }
 
     /**
-     * 指定コマ方向格納リスト取得
+     * 他コマ方向格納リスト取得
      * @return
      */
     public ArrayList<Integer> getAllOtherDiscPos() {
