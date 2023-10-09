@@ -13,6 +13,9 @@ public class Main {
         Player player2 = new Player();
         Scanner scan = new Scanner(System.in);
 
+        // 変数セット
+        boolean retryFlg = false;
+
         // プレイヤー名/コマ色設定
         System.out.println("プレイヤー1の名前を入力してください");
         String player1Name = scan.nextLine();
@@ -35,14 +38,17 @@ public class Main {
             // プレイヤーのターン切り替え
             boolean player1TurnFlg = player1.getTrun();
             boolean player2TurnFlg = player2.getTrun();
-            if (!player1TurnFlg && !player2TurnFlg) {
-                player1.setTurn(true);
-            } else if (player1TurnFlg && !player2TurnFlg) {
-                player1.setTurn(false);
-                player2.setTurn(true);
-            } else if (!player1TurnFlg && player2TurnFlg) {
-                player1.setTurn(true);
-                player2.setTurn(false);
+
+            if (!retryFlg) {
+                if (!player1TurnFlg && !player2TurnFlg) {
+                    player1.setTurn(true);
+                } else if (player1TurnFlg && !player2TurnFlg) {
+                    player1.setTurn(false);
+                    player2.setTurn(true);
+                } else if (!player1TurnFlg && player2TurnFlg) {
+                    player1.setTurn(true);
+                    player2.setTurn(false);
+                }
             }
             player1TurnFlg = player1.getTrun();
             player2TurnFlg = player2.getTrun();
@@ -84,9 +90,11 @@ public class Main {
                 System.out.println("引っくり返せるコマがありません。");
 
                 // コマ配置取消
-                // board.setDisc(rowNo2int, columnNo2int, "-");
+                board.setDisc(rowNo2int, columnNo2int, "-");
 
-                break;
+                retryFlg = true;
+
+                continue;
             }
 
             // 他コマ方向格納リスト取得
